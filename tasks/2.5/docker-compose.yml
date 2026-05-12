@@ -1,0 +1,28 @@
+services:
+  calculator:
+    image: devopsdockeruh/scaling-exercise-calculator
+    ports:
+      - "3000:3000"
+    container_name: calculator
+    networks:
+      - app-network
+  compute:
+    image: devopsdockeruh/scaling-exercise-compute
+    environment:
+      - VIRTUAL_HOST=compute.localtest.me
+    networks:
+      - app-network
+  load-balancer:
+    build: load-balancer
+    image: load-balancer
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    ports:
+      - "80:80"
+    container_name: load-balancer
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
